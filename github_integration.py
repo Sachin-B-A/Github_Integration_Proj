@@ -2,18 +2,17 @@ import streamlit as st
 import requests
 import json
 from datetime import datetime
+import urllib.parse
 
 # GitHub API Configuration
 GITHUB_API_URL = "https://api.github.com"
 CLIENT_ID = "Ov23li05rd8WogjIw0yU"  # Your GitHub client ID
 CLIENT_SECRET = "09a0159c6f2e3dc84abafa76d0f541449012f9fe"  # Your GitHub client secret
-REDIRECT_URI = "http://localhost:8501/callback"  # Redirect URI after authentication (should match GitHub app setup)
+REDIRECT_URI = "http://localhost:8501/callback"  # Redirect URI (ensure this matches your GitHub app settings)
 
 # UI Setup
 st.title("GitHub Integration Agent Testing Interface")
-st.markdown("""
-Welcome to the GitHub Integration Testing Interface. Here, you can test various GitHub operations like creating repositories, issues, and pull requests.
-""")
+st.markdown("""Welcome to the GitHub Integration Testing Interface. Here, you can test various GitHub operations like creating repositories, issues, and pull requests.""")
 
 # Function to get authorization URL
 def get_authorization_url():
@@ -118,8 +117,10 @@ else:
     code = st.text_input("Enter the authorization code from GitHub")
 
     if code:
+        # Exchange the code for an OAuth token
         OAUTH_TOKEN = exchange_code_for_token(code)
         if OAUTH_TOKEN:
+            # Save the OAuth token in session state
             st.session_state.OAUTH_TOKEN = OAUTH_TOKEN
             st.success("Authentication successful! Now you can perform GitHub operations.")
         else:
